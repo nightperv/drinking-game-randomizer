@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Drinking Game Randomizer</title>
+  <style>
+    body { font-family: sans-serif; background: #f5f5f5; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+    h1 { color: #333; }
+    button { padding: 10px 20px; font-size: 18px; border: none; border-radius: 10px; background: #4caf50; color: white; cursor: pointer; margin: 20px; }
+    button:hover { background: #45a049; }
+    #result { font-size: 20px; margin-top: 20px; max-width: 600px; text-align: center; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  </style>
+</head>
+<body>
+  <h1>Drinking Game Randomizer</h1>
+  <button onclick="generateRandom()">Rút thử thách!</button>
+  <div id="result">Ấn nút để bắt đầu!</div>
+
+  <script>
+    const data = [
+      "Bạn từng đi lạc ở đâu?",
+      "Nếu được quay lại 1 khoảnh khắc, bạn sẽ chọn khi nào?",
+      "Nếu cuộc sống là món ăn, hôm nay nó có vị gì?",
+      "Tưởng tượng bạn thắng giải Oscar – phát biểu ngắn",
+      "Giả tiếng cười của 3 người khác nhau",
+      "Giới thiệu bản thân theo phong cách hoạt hình",
+      "Kể 1 câu chuyện chỉ dùng 5 từ",
+      "Nam – nâng ly",
+      "Nữ – nâng ly",
+      "Ai từng bị tỏ tình mà từ chối – nâng ly",
+      "Ai từng mơ thấy người trong nhóm – nâng ly",
+      "Ai từng bị 'crush ghost' – nâng ly",
+      "Ai đeo kính – nâng ly",
+      "Ai đang độc thân – nâng ly",
+      "Ai từng khóc vì một bộ phim – nâng ly",
+      "Người vừa mới nói gần nhất – uống",
+      "Uống nếu bạn từng quên sinh nhật ai đó quan trọng",
+      "Ai từng bị gọi là 'mọt sách' – nâng ly",
+      "Ai từng đi học muộn vì ngủ quên – uống",
+      "Ai từng gọi nhầm tên người yêu cũ – uống",
+      "Kể 1 bí mật chưa từng nói",
+      "Chơi oẳn tù tì với người bên trái, ai thua uống",
+      "Tạo dáng chụp hình sống ảo",
+      "Giả giọng một người nổi tiếng",
+      "Chụp hình selfie nhóm ngay bây giờ",
+      "Uống nếu bạn từng ghen tuông vô lý",
+      "Kể tên 3 quốc gia có chữ cái đầu là 'T' trong 10 giây",
+      "Làm mặt đáng yêu trong 5 giây",
+      "Người nào tóc dài nhất – uống",
+      "Người nào cao nhất – uống",
+      "Ai từng trốn học – uống",
+      "Ai từng 'crush' giáo viên – nâng ly",
+      "Ai có sẹo hoặc hình xăm – nâng ly",
+      "Ai từng viết thư tay tỏ tình – uống",
+      "Ai chưa từng yêu – nâng ly",
+      "Chơi thử thách vỗ tay 10 cái nhanh nhất",
+      "Uống nếu bạn từng nhắn nhầm tin nhắn xấu hổ",
+      "Người bên phải bạn chọn người bất kỳ uống",
+      "Ai từng bị cấm dùng điện thoại – uống",
+      "Uống nếu bạn có hình nền điện thoại là người khác",
+      "Gọi tên 5 bài hát trong 10 giây",
+      "Nhảy 1 điệu ngắn bất kỳ",
+      "Giả vờ đang livestream giới thiệu bản thân",
+      "Chơi trò đứng 1 chân trong 10 giây",
+      "Ai từng có mối quan hệ yêu xa – nâng ly",
+      "Ai đã từng bị block – uống",
+      "Người nào vừa ăn gần nhất – uống",
+      "Kể 1 chuyện hài mà bạn từng trải qua",
+      "Hát 1 câu bất kỳ trong 1 bài hát nổi tiếng",
+      "Bắt chước dáng đi của người nổi tiếng",
+      "Nói 1 điều bạn tự hào về bản thân",
+      "Giả vờ bạn là robot trong 5 giây",
+      "Ai từng nói dối trắng trợn – nâng ly",
+      "Ai đã từng ghost người khác – uống",
+      "Người nào đang mặc đồ đen – uống",
+      "Người nào đang mặc áo trắng – uống",
+      "Ai có sinh nhật gần nhất – uống",
+      "Ai là người trầm tính nhất nhóm – uống",
+      "Kể 1 lần bạn cảm thấy cực kỳ xấu hổ",
+      "Hát 1 bài hát thiếu nhi",
+      "Kể tên 5 món ăn đường phố trong 10 giây",
+      "Giả vờ đang gọi điện cho 'người yêu'",
+      "Tạo dáng như siêu mẫu trong 5 giây",
+      "Ai từng có hơn 3 người yêu – nâng ly",
+      "Ai chưa từng hôn – uống",
+      "Ai có giọng hát hay nhất nhóm – uống",
+      "Uống nếu bạn từng tham gia cắm trại qua đêm",
+      "Ai từng thi trượt – nâng ly",
+      "Người có điện thoại pin yếu nhất – uống",
+      "Tạo 1 tiếng động vật bất kỳ",
+      "Người có giày rách hoặc cũ nhất – uống",
+      "Kể 1 điều ước bạn muốn nó thành sự thật",
+      "Người nào đang đói – uống",
+      "Người có chiều cao gần 1m7 – nâng ly",
+      "Ai từng yêu đơn phương – uống",
+      "Người nào đã uống nhiều nhất hôm nay – uống thêm",
+      "Ai hay nói nhiều nhất nhóm – uống",
+      "Ai ít nói nhất nhóm – nâng ly",
+      "Nói 3 điều tích cực về người bên trái",
+      "Giả giọng em bé nói câu bất kỳ",
+      "Giả vờ say rượu trong 5 giây",
+      "Ai từng gọi nhầm tên người yêu – uống",
+      "Kể tên 3 app bạn dùng nhiều nhất",
+      "Người có đồng hồ – uống",
+      "Ai có hơn 1000 ảnh trong máy – uống",
+      "Ai từng ngủ gật nơi công cộng – uống",
+      "Ai từng cười không dừng lại được – uống",
+      "Ai đang ngồi gần cửa ra vào – uống",
+      "Ai mang vớ (tất) có họa tiết – uống",
+      "Người mặc áo có chữ nhiều nhất – uống",
+      "Tạo dáng như bạn là diễn viên Hollywood",
+      "Giả vờ đang dẫn chương trình truyền hình",
+      "Ai có khả năng nói nhiều thứ tiếng – uống",
+      "Người nào uống ít nhất từ đầu game – uống",
+      "Ai đang có mùi thơm – uống",
+      "Ai có ví nhẹ nhất – uống",
+      "Ai nghĩ mình thông minh nhất – uống",
+      "Ai nghĩ mình xui nhất hôm nay – uống",
+      "Người nào dậy sớm nhất hôm nay – uống",
+      "Ai từng bỏ lỡ cơ hội lớn – uống",
+      "Tạo âm thanh như tiếng chuông cửa",
+      "Kể 1 chuyện kì lạ bạn từng gặp khi đi du lịch"
+    ];
+
+    function generateRandom() {
+      const randomIndex = Math.floor(Math.random() * data.length);
+      const resultDiv = document.getElementById("result");
+      resultDiv.innerText = data[randomIndex];
+    }
+  </script>
+</body>
+</html>
