@@ -5,27 +5,53 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Drinking Game Randomizer</title>
   <style>
-    body { font-family: sans-serif; background: #f5f5f5; display: flex; flex-direction: column; align-items: center; padding: 20px; }
-    h1 { color: #333; }
-    button { padding: 10px 20px; font-size: 18px; border: none; border-radius: 10px; background: #4caf50; color: white; cursor: pointer; margin: 10px; }
-    button:hover { background: #45a049; }
-    #result { font-size: 20px; margin-top: 20px; max-width: 600px; text-align: center; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f8f8f8;
+      text-align: center;
+      padding: 40px;
+    }
+    h1 {
+      font-size: 2rem;
+      color: #333;
+    }
+    button {
+      font-size: 18px;
+      padding: 10px 20px;
+      margin: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background-color: #4caf50;
+      color: white;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    #result {
+      margin-top: 30px;
+      font-size: 20px;
+      padding: 20px;
+      background: #fff;
+      border-radius: 12px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
   </style>
 </head>
 <body>
-  <h1>Drinking Game Randomizer</h1>
-  <button onclick="generateRandom()">Rút thử thách!</button>
-  <button onclick="resetList()">Chơi lại từ đầu 🔄</button>
+  <h1>🍻 Drinking Game Randomizer 🍻</h1>
+
+  <button onclick="generateRandom()">🎲 Rút thử thách!</button>
+  <button onclick="resetList()">🔄 Chơi lại từ đầu</button>
+
   <div id="result">Ấn nút để bắt đầu!</div>
 
   <script>
     const originalData = [
       "Người bạn nghĩ sẽ có tình yêu lâu dài? Tất cả người được chọn uống 1 ly đi ạ",
-      "Vote: Người thông minh nhất – uống,",
-      "Vote: Ai có đôi tay mềm mại nhất thì uống 1 ngụm",
-      "Vote: Ai có đôi mắt sáng và đẹp thì uống 1 ngụm",
-      "Vote: Chọn ra người có nụ cười dễ thương. Ai nhiều phiếu nhất thì uống",
-      "Vote: Chọn 1 người mà bạn nghĩ sẽ kết hôn sớm nhất. Ai nhiều phiếu nhất thì uống" "Người bạn nghĩ sẽ có tình yêu lâu dài? Tất cả người được chọn uống 1 ly đi ạ",
       "Vote: Người thông minh nhất – uống,",
       "Vote: Ai có đôi tay mềm mại nhất thì uống 1 ngụm",
       "Vote: Ai có đôi mắt sáng và đẹp thì uống 1 ngụm",
@@ -255,19 +281,17 @@
       " Ai chưa từng chơi bóng đá thì uống 1 ngụm",
       " Ai biết làm bánh thì uống 1 ngụm",
     ];
+
     let data = [...originalData];
 
     function generateRandom() {
       const resultDiv = document.getElementById("result");
-
       if (data.length === 0) {
         resultDiv.innerHTML = "🎉 Đã hết thử thách! Nhấn 'Chơi lại từ đầu 🔄' để reset.";
         return;
       }
-
       const randomIndex = Math.floor(Math.random() * data.length);
       const selected = data.splice(randomIndex, 1)[0];
-
       resultDiv.innerHTML = `
         <div><strong>Thử thách:</strong> ${selected}</div>
         <div style="margin-top: 12px; color: #888;">
