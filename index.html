@@ -3,17 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Drinking Game Randomizer</title>
+  <title>Drinking Game Randomizer (Google Sheet)</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f8f8f8;
+      font-family: sans-serif;
       text-align: center;
+      background: #f9f9f9;
       padding: 40px;
-    }
-    h1 {
-      font-size: 2rem;
-      color: #333;
     }
     button {
       font-size: 18px;
@@ -21,268 +17,51 @@
       margin: 10px;
       border: none;
       border-radius: 8px;
-      cursor: pointer;
       background-color: #4caf50;
       color: white;
+      cursor: pointer;
     }
     button:hover {
-      background-color: #45a049;
+      background-color: #388e3c;
     }
     #result {
-      margin-top: 30px;
+      margin-top: 20px;
       font-size: 20px;
+      background: white;
       padding: 20px;
-      background: #fff;
-      border-radius: 12px;
+      border-radius: 10px;
       max-width: 600px;
       margin-left: auto;
       margin-right: auto;
-      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
   </style>
 </head>
 <body>
-  <h1>🍻 Drinking Game Randomizer 🍻</h1>
-
+  <h1>🍻 Rút Thử Thách Ngẫu Nhiên</h1>
   <button onclick="generateRandom()">🎲 Rút thử thách!</button>
   <button onclick="resetList()">🔄 Chơi lại từ đầu</button>
-
-  <div id="result">Ấn nút để bắt đầu!</div>
+  <div id="result">Đang tải dữ liệu từ Google Sheet...</div>
 
   <script>
-    const originalData = [
-      "Người bạn nghĩ sẽ có tình yêu lâu dài? Tất cả người được chọn uống 1 ly đi ạ",
-      "Vote: Người thông minh nhất – uống,",
-      "Vote: Ai có đôi tay mềm mại nhất thì uống 1 ngụm",
-      "Vote: Ai có đôi mắt sáng và đẹp thì uống 1 ngụm",
-      " Vote: Chọn ra người có nụ cười dễ thương. Ai nhiều phiếu nhất thì uống",
-      " Vote: Chọn 1 người mà bạn nghĩ sẽ kết hôn sớm nhất. Ai nhiều phiếu nhất thì uống",
-      " Vote: Chỉ vào người bạn muốn đi chơi cuối tuần. Người nhiều phiếu nhất nâng ly đi ạ",
-      " Vote: Ai là người trầm tính nhất nhóm – uống,",
-      " Vote: Ai có đôi giày đẹp nhất trong nhóm? Người nhiều phiếu nhất nâng ly đi ạ",
-      " Vote Ai là người hay ngủ muộn thì uống 1 ngụm",
-      " Uống nếu bạn từng tham gia cắm trại qua đêm",
-      " Uống nếu bạn từng quên sinh nhật ai đó quan trọng",
-      " Uống nếu bạn từng nhắn nhầm tin nhắn xấu hổ",
-      " Uống nếu bạn từng ghen tuông vô lý",
-      " Uống nếu bạn có hình nền điện thoại là người khác",
-      " Trừ người chọn câu này, ai giơ 2 tay chậm nhất thì uống.",
-      " Thử thách: Chọn 1 người và nói 1 câu khen chân thành, nếu không nói thì uống",
-      " Thử khen 1 người chơi 3 câu liên tiếp. Nếu ngại thì uống 1 ngụm",
-      " Tên người yêu cũ của bạn là gì? Nếu không trả lời thì uống",
-      " Tạo dáng như một siêu anh hùng mà bạn yêu thích. Nếu không làm thì uống",
-      " Tạo âm thanh như tiếng chuông cửa",
-      " Tạo 1 tiếng động vật bất kỳ",
-      " Selfie nhóm và 'dzô!'. ",
-      " Ôm 1 người bất kỳ. Nếu không dám hoặc họ từ chối thì bạn uống",
-      " Nữ thì nâng ly 1 ngụm",
-      " Nói một câu mà bạn cảm thấy thật sự cảm động.",
-      " Nói 3 điều tích cực về người bên trái",
-      " Nói 1 điều bạn tự hào về bản thân",
-      " Nói 1 bí mật chưa từng kể. Nếu không muốn kể thì uống 1 ngụm",
-      " Nhảy điệu bất kỳ 10s. Không nhảy thì uống",
-      " Người vừa mới nói gần nhất – uống,",
-      " Người nào vừa ăn gần nhất – uống,",
-      " Người nào uống ít nhất từ đầu game – uống,",
-      " Người nào tóc dài nhất – uống,",
-      " Người nào dậy sớm nhất hôm nay – uống,",
-      " Người nào đang mặc đồ đen – uống,",
-      " Người nào đang mặc áo trắng – uống,",
-      " Người nào đang đói – uống,",
-      " Người nào đã uống nhiều nhất hôm nay – uống thêm",
-      " Người nào cao nhất – uống,",
-      " Người mặc áo có chữ nhiều nhất – uống,",
-      " Người có đồng hồ – uống,",
-      " Người có điện thoại pin yếu nhất – uống,",
-      " Người bên phải bạn chọn người bất kỳ uống,",
-      " Nếu cuộc sống là món ăn, hôm nay nó có vị gì?,",
-      " Nếu bạn dùng mạng xã hội >3h/ngày thì uống 1 ngụm",
-      " Nếu bạn đang dùng mạng xã hội hơn 3h/ngày thì phải uống 1 ngụm",
-      " Nếu bạn còn giữ đồ cũ của người yêu cũ thì phải uống 2 ngụm",
-      " Nam thì nâng ly 2 ngụm",
-      " Mọi người phải làm theo điệu nhảy 'Gangnam Style'. Ai không làm thì uống 1 ngụm.",
-      " Mọi người phải hát 1 câu trong bài hát yêu thích (nếu không hát thì phải uống 1 ngụm)",
-      " Mọi người nêu 1 điều biết về người ngồi bên phải.(Ngày sinh, cân nặng, số anh em trong nhà,...) Nếu ko đúng thì uống.",
-      " Mọi người lần lượt kể tên thành phố/tỉnh Việt Nam, ai không kể thì uống 1 ngụm",
-      " Mọi người lần lượt kể tên quốc gia hiện tại trên thế giới, ai không kể được thì uống 1 ngụm",
-      " Mọi người làm động tác đứng lên bằng 1 chân, ai không làm thì uống 1 ngụm",
-      " Mọi người kể một bí mật về bản thân, ai không kể thì uống 1 ngụm",
-      " Mọi người hát 1 câu bài hát yêu thích, không hát thì uống 1 ngụm",
-      " Mọi người đặt tay lên bàn, người cuối cùng làm thì uống 1 ngụm",
-      " Mọi người chơi trò 'Đi tìm món đồ có màu đỏ', ai không tìm thấy/muộn nhất thì uống 1 ngụm",
-      " Mọi người bắt tay với người đối diện, ai không làm/muộn nhất thì uống 1 ngụm",
-      " Mô tả người bạn từng tỏ tình với bằng 5 từ. Nếu không thì uống",
-      " Mô tả một ngày hoàn hảo của bạn trong tương lai. ",
-      " Mô tả mẫu người lý tưởng trong 3 từ. Nếu không mô tả được thì uống 1 ngụm",
-      " Mô tả mẫu người bạn không thích bằng 3 từ. Nếu không thì uống",
-      " Mô tả cảm giác khi nhìn thấy người yêu cũ lần đầu tiên sau khi chia tay.",
-      " Lần gần nhất bạn nói dối là gì? Nếu không nhớ hoặc không nói thì uống 1 ngụm",
-      " Lần gần nhất bạn khóc là khi nào? (Nếu không muốn chia sẻ thì uống 1 ngụm)",
-      " Làm mặt đáng yêu trong 5 giây,",
-      " Làm 1 động tác hài hước để mọi người cười. Người nào cười thì uống. Nếu không ai cười thì bạn uống. ",
-      " Khen 1 người chơi 3 câu. Nếu không làm thì uống",
-      " Kể về một lần bạn có thể nhận ra mình đã trưởng thành. Nếu không kể thì uống",
-      " Kể về một lần bạn cảm thấy thật sự mạnh mẽ. Nếu không kể thì uống",
-      " Kể về một lần bạn cảm thấy hối tiếc.",
-      " Kể về một lần bạn cảm thấy buồn nhất.",
-      " Kể về một kỷ niệm bạn không muốn quên. Nếu không kể thì uống",
-      " Kể về lần đầu tiên bạn uống rượu.",
-      " Kể về lần đầu tiên bạn tham gia trò chơi uống rượu. Nếu đây là lần đầu tiên thì bạn uống, Không thì cùng nâng ly lên nào các bạn ơi.",
-      " Kể về lần đầu tiên bạn học được một điều quan trọng.",
-      " Kể về lần đầu tiên bạn gặp người bên trái.",
-      " Kể về lần đầu tiên bạn có một mối tình.",
-      " Kể về lần đầu tiên bạn ăn món ăn mà bạn không bao giờ quên.",
-      " Kể về lần bạn cảm thấy mình làm được điều khó nhất trong đời.",
-      " Kể tên động vật, ai thua thì uống 1 ngụm",
-      " Kể tên 5 món ăn đường phố trong 10 giây Nếu không kể thì uống",
-      " Kể tên 3 thứ bạn ghét làm.",
-      " Kể tên 3 thói quen mà bạn muốn từ bỏ. ",
-      " Kể tên 3 quốc gia có chữ cái đầu là 'T' trong 10 giây,",
-      " Kể tên 3 app bạn dùng nhiều nhất,",
-      " Kể tên 1 crush cũ. Nếu từ chối, phải uống 1 ngụm",
-      " Kể một câu chuyện về một lần bạn thử làm điều mới.",
-      " Kể 1 lần bạn cảm thấy cực kỳ xấu hổ",
-      " Kể 1 lần bạn bị người khác từ chối.",
-      " Kể 1 điều ước bạn muốn nó thành sự thật",
-      " Kể 1 chuyện kì lạ bạn từng gặp khi đi du lịch",
-      " Kể 1 chuyện hài mà bạn từng trải qua",
-      " Kể 1 câu chuyện chỉ dùng 5 từ",
-      " Kể 1 bí mật chưa từng nói",
-      " Hôn gió 1 người bất kỳ trong bàn. Nếu không dám thì uống 1 ngụm",
-      " Hãy tự khen mình 3 điểm nổi bật. Nếu không thì uống.",
-      " Hãy làm một thử thách thể lực (chẳng hạn: chống đẩy 5 cái) nếu không thì uống",
-      " Hãy làm một động tác khiến mọi người phải cười. Nếu không làm được thì uống",
-      " Hãy kể về lần đầu tiên bạn cảm thấy tự do.",
-      " Hãy kể một lần bạn giúp đỡ một ai đó.",
-      " Hãy kể một lần bạn cảm thấy thất vọng nhất trong đời.",
-      " Hãy kể một câu chuyện về chuyến đi du lịch bạn yêu thích nhất.",
-      " Hãy hát một đoạn trong bài hát yêu thích của bạn.",
-      " Hãy hát một bài hát mà bạn từng nghe mỗi khi buồn.",
-      " Hãy chia sẻ về một niềm vui trong cuộc sống.",
-      " Hãy chia sẻ về một điều mà bạn rất sợ.",
-      " Hãy chia sẻ một điều mà bạn luôn ước ao.",
-      " Hát 1 câu bất kỳ trong 1 bài hát nổi tiếng,",
-      " Hát 1 bài hát thiếu nhi,",
-      " Gọi tên 5 bài hát trong 10 giây,",
-      " Gọi tên 3 người bạn từng thích. Nếu trùng tên với người ở đây thì uống 1 ly. (Số người = Số ly)",
-      " Gọi điện cho một người trong danh bạ và nói 'Chào bạn, tôi là người bạn yêu thích nhất' (không phải người ở đây). Nếu không làm thì uống",
-      " Giới thiệu bản thân theo phong cách hoạt hình,",
-      " Giả vờ say rượu trong 5 giây,",
-      " Giả vờ đang livestream giới thiệu bản thân",
-      " Giả vờ đang gọi điện cho 'người yêu'",
-      " Giả vờ đang dẫn chương trình truyền hình",
-      " Giả vờ bạn là robot trong 5 giây",
-      " Giả tiếng cười của 3 người khác nhau",
-      " Giả giọng một người nổi tiếng",
-      " Giả giọng em bé nói câu bất kỳ",
-      " Đưa ra một lời khuyên cho chính mình khi còn trẻ",
-      " Đồng khởi 1 ly",
-      " Đổi chỗ ngồi với người đối diện. Nếu người đó đồng ý thì bạn uống 1 ly. Nếu không đồng ý thì người đó uống 1 ly. ",
-      " Đọc tên 3 người bạn từng thích. Nếu không đọc thì uống 1 ngụm",
-      " Đập tay với 3 người gần bạn nhất. Không đủ người thì bạn uống, Nếu đủ thì người bạn đập tay sẽ uống.",
-      " Cười thật tươi trong 10 giây. Nếu không làm thì uống 1 ngụm",
-      " Chụp hình selfie nhóm ngay bây giờ",
-      " Chọn một món ăn mà bạn yêu thích nhất và giải thích lý do. Nếu không thì uống",
-      " Chọn 1 tháng, nếu ở đây có ít nhất 1 người có sinh nhật trong tháng thì chúc mừng sinh nhật, họ sẽ uống. Nếu không có ai thì bạn uống. ",
-      " Chơi trò đứng 1 chân trong 10 giây,",
-      " Chơi oẳn tù tì với người bên trái, ai thua uống",
-      " Chỉ vào người bạn muốn đi chơi cùng cuối tuần. (Chỉ xong rồi đọc) Nếu bị từ chối thì họ uống, đồng ý thì bạn uống",
-      " Bạn nghĩ sao về việc yêu xa? Bên nào nhiều hơn thì uống",
-      " Bạn có thích đi du lịch một mình không? Bên nào ít hơn thì uống",
-      " Bạn có thể sống một tháng mà không điện thoại không? Có thì uống",
-      " Bạn có sẵn sàng quay lại với người yêu cũ không? Bên nào nhiều hơn thì uống",
-      " Bạn có muốn thử sức với một công việc hoàn toàn mới không? Bên nào nhiều hơn thì uống",
-      " Bạn có muốn thay đổi điều gì trong quá khứ không? (kể đi ạ) Bên nào nhiều hơn thì uống",
-      " Bạn có khi nào thấy hối hận về điều gì không? (kể đi ạ) Bên nào nhiều hơn thì uống",
-      " Bạn có cảm thấy mình là người may mắn không? Bên nào nhiều hơn thì uống",
-      " Bạn có bao giờ thử trò 'Blind datin' hay app hẹn hò? Bên nào nhiều hơn thì uống",
-      " Ai từng yêu xa thì phải uống 1 ngụm",
-      " Ai từng yêu đơn phương – uống,",
-      " Ai từng viết thư tay tỏ tình – uống,",
-      " Ai từng trượt patin thì uống 1 ngụm",
-      " Ai từng trốn học – uống,",
-      " Ai từng thi trượt – nâng ly,",
-      " Ai từng tham gia cuộc thi sắc đẹp thì uống 1 ngụm",
-      " Ai từng nói dối để tránh đi chơi thì uống 1 ngụm",
-      " Ai từng ngủ gật nơi công cộng – uống,",
-      " Ai từng mơ thấy người trong nhóm – nâng ly,",
-      " Ai từng làm việc trong ngành dịch vụ thì uống 1 ngụm",
-      " Ai từng khóc vì một bộ phim – nâng ly,",
-      " Ai từng gọi nhầm tên người yêu cũ – uống,",
-      " Ai từng gọi nhầm tên người yêu – uống,",
-      " Ai từng được tỏ tình mà từ chối – nâng ly,",
-      " Ai từng đi nước ngoài thì phải uống 1 ngụm",
-      " Ai từng đi lạc thì uống.",
-      " Ai từng đi học muộn vì ngủ quên – uống,",
-      " Ai từng đc tỏ tình thì uống 1 ngụm",
-      " Ai từng cười không dừng lại được – uống,",
-      " Ai từng có mối quan hệ yêu xa – nâng ly,",
-      " Ai từng có hơn 3 người yêu – nâng ly,",
-      " Ai từng bỏ lỡ cơ hội lớn – uống,",
-      " Ai từng bị người yêu đá thì uống 1 ngụm",
-      " Ai từng bị gọi là 'mọt sách' – nâng ly,",
-      " Ai từng bị đá thì phải uống 1 ngụm",
-      " Ai từng bị cấm dùng điện thoại – uống,",
-      " Ai từng bị 'crush ghost' – nâng ly,",
-      " Ai từng 'crush' giáo viên – nâng ly,",
-      " Ai trong nhóm bạn đã từng giúp đỡ bạn nhiều nhất? Bạn và người đó cùng uống",
-      " Ai tin vào tình yêu sét đánh không? Bên nào nhiều hơn thì uống",
-      " Ai thích làm việc nhóm không? Bên nào ít hơn thì uống",
-      " Ai nói nhiều nhất trong nhóm thì uống 1 ngụm",
-      " Ai nói chuyện trong lúc uống thì uống 1 ngụm",
-      " Ai mang vớ (tất) có họa tiết – uống,",
-      " Ai là người uống ít nhất hiện tại thì phải uống 1 ngụm",
-      " Ai là người lớn tuổi nhất trong bàn thì phải uống 1 ngụm",
-      " Ai là người đến muộn nhất hôm nay thì phải uống 1 ngụm",
-      " Ai là người đã nói nhiều nhất từ đầu game đến giờ thì phải uống 1 ngụm",
-      " Ai là người có chiếc xe máy màu đen thì uống 1 ngụm",
-      " Ai là người bạn có thiện cảm trong nhóm? Bạn và người đó cùng uống",
-      " Ai không có thẻ tín dụng thì uống 1 ngụm",
-      " Ai ít nói nhất nhóm – nâng ly,",
-      " Ai hay nói nhiều nhất nhóm – uống,",
-      " Ai đang trong một mối quan hệ thì uống 1 ngụm (Mập mờ cx uống)",
-      " Ai đang ngồi gần cửa ra vào – uống,",
-      " Ai đang mang đồng hồ thì uống 1 ngụm",
-      " Ai đang mặc áo màu trắng thì phải uống 1 ngụm",
-      " Ai đang mặc áo hoodie thì uống 1 ngụm",
-      " Ai đang dùng iPhone thì phải uống 1 ngụm",
-      " Ai đang dùng điện thoại Samsung thì uống 1 ngụm",
-      " Ai đang độc thân thì uống 2 ngụm",
-      " Ai đang đeo kính thì phải uống 1 ngụm",
-      " Ai đang có người yêu thì phải uống 1 ngụm",
-      " Ai đang có mùi thơm – uống,",
-      " Ai đang ăn kiêng thì uống 1 ngụm",
-      " Ai đã từng nấu ăn cho bạn bè thì uống 1 ngụm",
-      " Ai đã từng ghost người khác – uống,",
-      " Ai đã từng đi du lịch nước ngoài thì uống 1 ngụm",
-      " Ai đã từng cúp học thì phải uống 1 ngụm",
-      " Ai đã từng bị block – uống,",
-      " Ai có tóc ngắn thì uống 1 ngụm",
-      " Ai có tóc dài thì uống 1 ngụm",
-      " Ai có thẻ ngân hàng màu đỏ thì uống 1 ngụm",
-      " Ai có tên bắt đầu bằng chữ cái đứng sau 'M' phải uống 1 ngụm",
-      " Ai có số điện thoại là số chẵn thì uống 1 ngụm",
-      " Ai có sinh nhật gần nhất – uống,",
-      " Ai có sẹo hoặc hình xăm – nâng ly,",
-      " Ai có ngày sinh trong sau tháng 6 thì uống 1 ngụm",
-      " Ai có khả năng nói nhiều thứ tiếng (3+)  – uống ",
-      " Ai có hơn 1000 ảnh trong máy – uống,",
-      " Ai có hình nền điện thoại là ảnh tự chụp thì uống 1 ngụm",
-      " Ai có giọng nói cao thì uống 1 ngụm",
-      " Ai có giọng hát hay nhất nhóm – uống",
-      " Ai có giày màu trắng thì uống 1 ngụm",
-      " Ai có đồ vật màu đỏ thì uống 1 ngụm",
-      " Ai có chiều cao trên 1m7 thì uống 1 ngụm",
-      " Ai có bút viết trong túi thì uống 1 ngụm",
-      " Ai có bức ảnh tự sướng với người nổi tiếng thì uống 1 ngụm",
-      " Ai chưa từng xem một bộ phim Marvel thì uống 1 ngụm",
-      " Ai chưa từng hôn – uống,",
-      " Ai chưa từng đi du lịch nước ngoài thì uống 1 ngụm",
-      " Ai chưa từng chơi bóng đá thì uống 1 ngụm",
-      " Ai biết làm bánh thì uống 1 ngụm",
-    ];
+    let originalData = [];
+    let data = [];
 
-    let data = [...originalData];
+    async function loadDataFromSheet() {
+      const url = "https://docs.google.com/spreadsheets/d/1jBfMWWc4RoVBTmqiZXPqAyHbHWYsSv3FDAH01TQGkHY/gviz/tq?tqx=out:json&sheet=Sheet1";
+      try {
+        const res = await fetch(url);
+        const text = await res.text();
+        const json = JSON.parse(text.substr(47).slice(0, -2)); // Google Sheets JSON format
+        const rows = json.table.rows;
+        originalData = rows.map(r => r.c[0]?.v).filter(Boolean);
+        data = [...originalData];
+        document.getElementById("result").innerText = "Dữ liệu đã tải xong! Ấn nút để bắt đầu.";
+      } catch (err) {
+        document.getElementById("result").innerText = "❌ Không thể tải dữ liệu từ Google Sheet.";
+        console.error(err);
+      }
+    }
 
     function generateRandom() {
       const resultDiv = document.getElementById("result");
@@ -305,6 +84,8 @@
       const resultDiv = document.getElementById("result");
       resultDiv.innerText = "Danh sách đã được làm mới! Ấn nút để bắt đầu lại 🎲";
     }
+
+    document.addEventListener("DOMContentLoaded", loadDataFromSheet);
   </script>
 </body>
 </html>
